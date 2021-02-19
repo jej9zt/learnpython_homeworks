@@ -1,16 +1,16 @@
-dic = {"Как дела": "Хорошо!", "Что делаешь?": "Программирую",
-       "Есть минутка?": "Нет", "Какая погода?": "Холодно"}
+questions = {"Как дела": "Хорошо!", "Что делаешь?": "Программирую",
+             "Есть минутка?": "Нет", "Какая погода?": "Холодно"}
 
 
-def ask_user(dic):
+def ask_user(questions):
     ask = input('Введите вопрос: ')
-    if ask in dic:
-        print(dic[ask])
+    if questions.get(ask):
+        print(questions[ask])
 
 
 while True:
     try:
-        ask_user(dic)
+        ask_user(questions)
     except KeyboardInterrupt:
         print('\nПока!')
         break

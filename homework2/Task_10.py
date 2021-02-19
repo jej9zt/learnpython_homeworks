@@ -17,12 +17,22 @@ def talk_to_me(update, context):
 
 
 def planet(update, context):
-    item = update.message.text.split()[1]
-    date = update.message.date
-    planet = getattr(ephem, item)
-    logging.info(planet)
-    constellation = ephem.constellation(planet(date))
-    update.message.reply_text(constellation)
+    try:
+        _, item = update.message.text.split()
+        date = update.message.date
+        try:
+            planet = getattr(ephem, item)
+            logging.info(planet)
+            constellation = ephem.constellation(planet(date))
+            update.message.reply_text(constellation)
+        except AttributeError:
+            planet_list = []
+            for _x, _y, planet_name in ephem._libastro.builtin_planets():
+                planet_list.append(planet_name)
+            update.message.reply_text('Я знаю только эти планеты:\n{}'.
+                                      format(planet_list))
+    except ValueError:
+        update.message.reply_text('Напиши /planet Planet_name')
 
 
 def main():
