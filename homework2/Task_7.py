@@ -4,8 +4,9 @@ questions = {"Как дела": "Хорошо!", "Что делаешь?": "Пр
 
 def ask_user(questions):
     ask = input('Введите вопрос: ')
-    if questions.get(ask):
-        print(questions[ask])
+    answer = questions.get(ask)
+    if answer:
+        print(answer)
 
 
 while True:
