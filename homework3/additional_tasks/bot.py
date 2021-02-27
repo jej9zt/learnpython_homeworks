@@ -135,7 +135,10 @@ def calculate(calc_items_list, sign):
         if not item.isdigit():
             return 'Что-то тут не так, напиши 2+2 например'
     a, b = calc_items_list
-    return math_operators[sign](int(a), int(b))
+    try:
+        return math_operators[sign](int(a), int(b))
+    except ZeroDivisionError:
+        return 'На ноль делить нельзя. Подели не на ноль'
 
 
 def calc(update, context):
