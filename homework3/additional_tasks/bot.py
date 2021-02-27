@@ -4,10 +4,9 @@ import settings
 import ephem
 import re
 from random import choice
+import operator
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
-
-CITIES = range(1)
 
 
 def greet_user(update, context):
@@ -129,6 +128,16 @@ def get_sign(calc_items):
             return sign
 
 
+def calculate(calc_items_list, sign):
+    math_operators = {'+': operator.add, '-': operator.sub,
+                      '*': operator.mul, '/': operator.truediv}
+    for item in calc_items_list:
+        if not item.isdigit():
+            return 'Что-то тут не так, напиши 2+2 например'
+    a, b = calc_items_list
+    return math_operators[sign](int(a), int(b))
+
+
 def calc(update, context):
     if context.args:
         calc_items = ''.join(context.args)
@@ -136,19 +145,9 @@ def calc(update, context):
             update.message.reply_text('Что-то тут не так, напиши 2+2 например')
         else:
             sign = get_sign(calc_items)
-            if sign == '+' and len(calc_items.split(sign)) == 2:
-                a, b = calc_items.split(sign)
-                answer = int(a) + int(b)
-            elif sign == '-' and len(calc_items.split(sign)) == 2:
-                a, b = calc_items.split(sign)
-                answer = int(a) - int(b)
-            elif sign == '*' and len(calc_items.split(sign)) == 2:
-                a, b = calc_items.split(sign)
-                answer = int(a) * int(b)
-            elif sign == '/' and len(calc_items.split(sign)) == 2:
-                a, b = calc_items.split(sign)
-                answer = int(a) / int(b)
-            update.message.reply_text(answer)
+            calc_items_list = calc_items.split(sign)
+            if len(calc_items_list) == 2:
+                update.message.reply_text(calculate(calc_items_list, sign))
 
 
 def main():
