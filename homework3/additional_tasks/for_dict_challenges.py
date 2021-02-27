@@ -13,12 +13,13 @@ students = [
 # Вася: 1
 # Маша: 2
 # Петя: 2
-first_name_list = []
-for i in range(len(students)):
-    first_name_list.append(students[i]['first_name'])
-first_name_set = set(first_name_list)
-for value in first_name_set:
-    print(f'{value}: ', first_name_list.count(value))
+from collections import Counter
+
+cnt = Counter()
+for idx, _ in enumerate(students):
+    cnt[students[idx]['first_name']] += 1
+for name, quantity in cnt.items():
+    print(f'{name}: ', quantity)
 
 # Задание 2
 # Дан список учеников, нужно вывести самое часто повторящееся имя.
@@ -33,12 +34,11 @@ students = [
 
 # Пример вывода:
 # Самое частое имя среди учеников: Маша
-first_name_list = []
-for i in range(len(students)):
-    first_name_list.append(students[i]['first_name'])
-print('Самое частое имя среди учеников:',
-      max(first_name_list, key=lambda first_name:
-          first_name_list.count(first_name)))
+cnt = Counter()
+for idx, _ in enumerate(students):
+    cnt[students[idx]['first_name']] += 1
+print('Самое частое имя среди учеников:', cnt.most_common(1)[0][0])
+
 
 # Задание 3
 # Есть список учеников в нескольких классах, нужно вывести самое частое имя в каждом классе.
@@ -58,13 +58,12 @@ school_students = [
 # Пример вывода:
 # Самое частое имя в классе 1: Вася
 # Самое частое имя в классе 2: Маша
-for i in range(len(school_students)):
-    first_name_list = []
-    for j in range(len(school_students[i])):
-        first_name_list.append(school_students[i][j]['first_name'])
-    print(f'Самое частое имя в классе {i+1}:',
-          max(first_name_list, key=lambda first_name:
-              first_name_list.count(first_name)))
+for i, _ in enumerate(school_students):
+    cnt = Counter()
+    for j, _ in enumerate(school_students[i]):
+        cnt[school_students[i][j]['first_name']] += 1
+    print(f'Самое частое имя в классе {i+1}:', cnt.most_common(1)[0][0])
+
 
 
 # Задание 4
@@ -84,17 +83,16 @@ is_male = {
 # Пример вывода:
 # В классе 2a 2 девочки и 0 мальчика.
 # В классе 3c 0 девочки и 2 мальчика.
-for i in range(len(school)):
-    male_count = 0
-    female_count = 0
+for i, _ in enumerate(school):
+    cnt = Counter()
     class_name = school[i]['class']
-    for j in range(len(school[i]['students'])):
+    for j, _ in enumerate(school[i]['students']):
         if is_male.get(school[i]['students'][j]['first_name']):
-            male_count += 1
+            cnt['male'] += 1
         else:
-            female_count += 1
-    print(f'В классе {class_name} {female_count} девочки '
-          f'и {male_count} мальчика.')
+            cnt['female'] += 1
+    print(f"В классе {class_name} {cnt['female']} девочки "
+          f"и {cnt['male']} мальчика.")
 
 # Задание 5
 # По информации о учениках разных классов нужно найти класс, в котором больше всего девочек и больше всего мальчиков.
@@ -113,20 +111,14 @@ is_male = {
 # Пример вывода:
 # Больше всего мальчиков в классе 3c
 # Больше всего девочек в классе 2a
-class_male_count = []
-class_female_count = []
-for i in range(len(school)):
-    male_count = 0
-    female_count = 0
+male_cnt = Counter()
+female_cnt = Counter()
+for i, _ in enumerate(school):
     class_name = school[i]['class']
-    for j in range(len(school[i]['students'])):
+    for j, _ in enumerate(school[i]['students']):
         if is_male.get(school[i]['students'][j]['first_name']):
-            male_count += 1
+            male_cnt[class_name] += 1
         else:
-            female_count += 1
-    class_male_count.append((class_name, male_count))
-    class_female_count.append((class_name, female_count))
-class_male_count_max = max(class_male_count, key=lambda i: i[1])[0]
-class_female_count_max = max(class_female_count, key=lambda i: i[1])[0]
-print('Больше всего мальчиков в классе', class_male_count_max)
-print('Больше всего девочек в классе', class_female_count_max)
+            female_cnt[class_name] += 1
+print('Больше всего мальчиков в классе', male_cnt.most_common(1)[0][0])
+print('Больше всего девочек в классе', female_cnt.most_common(1)[0][0])
