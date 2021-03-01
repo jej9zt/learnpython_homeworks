@@ -46,8 +46,8 @@ groups = [
 # ???
 group_quantity = len(groups)
 print(f'Всего {group_quantity} группы.')
-for i in enumerate(group_quantity):
-    student_quantity = len(groups[i])
+for _, group in enumerate(groups):
+    student_quantity = len(group)
     print(f'В группе {student_quantity} ученика.')
 
 # Задание 5
@@ -62,7 +62,7 @@ groups = [
 ]
 # ???
 group_quantity = len(groups)
-for i in enumerate(group_quantity):
-    print(f'Группа {i+1}: ', end='')
-    print(*groups[i], sep=', ', end='')
+for idx, group in enumerate(groups, start=1):
+    print(f'Группа {idx}: ', end='')
+    print(*group, sep=', ', end='')
     print()

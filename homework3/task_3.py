@@ -10,5 +10,4 @@ with open('personal_info.csv', 'w', encoding='utf-8', newline='') as f:
         headers.append(header)
     writer = csv.DictWriter(f, headers, delimiter=';')
     writer.writeheader()
-    for user_info in personal_info:
-        writer.writerow(user_info)
+    writer.writerows(personal_info)

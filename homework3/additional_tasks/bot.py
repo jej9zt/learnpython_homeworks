@@ -1,5 +1,6 @@
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from collections import defaultdict
 import settings
 import ephem
 import re
@@ -95,29 +96,26 @@ def cities_game_core(city, user_data):
 
 
 def create_cities_dict(cities_list):
-    cities_dict = {}
+    cities_dict = defaultdict(set)
     for city in cities_list:
         if re.match(fr'{city[0]}.*?', city):
-            if cities_dict.get(city[0]):
-                cities_dict[city[0]].add(city)
-            else:
-                cities_dict[city[0]] = {city}
+            cities_dict[city[0]].add(city)
     return cities_dict
 
 
 def cities_game(update, context):
-    if context.args:
-        city = context.args[0].capitalize()
-        if not context.user_data.get('cities_dict'):
-            context.user_data['cities_used'] = []
-            with open('goroda.txt', 'r') as f:
-                context.user_data['cities_dict'] = create_cities_dict(
-                    f.read().splitlines())
-            update.message.reply_text(cities_game_core(city,
-                                                       context.user_data))
-        else:
-            update.message.reply_text(cities_game_core(city,
-                                                       context.user_data))
+    if not context.args:
+        update.message.reply_text('Название города забыл написать?')
+        return
+    city = context.args[0].capitalize()
+    if not context.user_data.get('cities_dict'):
+        context.user_data['cities_used'] = []
+        with open('goroda.txt', 'r') as f:
+            context.user_data['cities_dict'] = create_cities_dict(
+                f.read().splitlines())
+        update.message.reply_text(cities_game_core(city, context.user_data))
+    else:
+        update.message.reply_text(cities_game_core(city, context.user_data))
 
 
 def get_sign(calc_items):
@@ -141,15 +139,18 @@ def calculate(calc_items_list, sign):
 
 
 def calc(update, context):
-    if context.args:
-        calc_items = ''.join(context.args)
-        if len(calc_items) < 3:
-            update.message.reply_text('Что-то тут не так, напиши 2+2 например')
-        else:
-            sign = get_sign(calc_items)
-            calc_items_list = calc_items.split(sign)
-            if len(calc_items_list) == 2:
-                update.message.reply_text(calculate(calc_items_list, sign))
+    if not context.args:
+        update.message.reply_text('Ничего незабыл написать?'
+                                  ' Напиши 2+2 например')
+        return
+    calc_items = ''.join(context.args)
+    if len(calc_items) < 3:
+        update.message.reply_text('Что-то тут не так, напиши 2+2 например')
+    else:
+        sign = get_sign(calc_items)
+        calc_items_list = calc_items.split(sign)
+        if len(calc_items_list) == 2:
+            update.message.reply_text(calculate(calc_items_list, sign))
 
 
 def main():
